@@ -9,7 +9,7 @@ const GitFlowElm = styled.div`
     margin: 0 auto;
 `;
 
-const GlobalActions = styled.div`
+export const GlobalActions = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-column-gap: 10px;
@@ -347,6 +347,16 @@ class GitFlow extends Component {
         )
     };
 
+    renderGlobalActions = () => {
+        return (
+        <GlobalActions>
+            <Button onClick={this.onNewHotFix}>New Hot Fix</Button>
+            <Button onClick={this.props.onNewRelease}>New Release</Button>
+            <Button onClick={this.onNewFeature}>New Feature</Button>
+        </GlobalActions>
+        );
+    };
+
     render() {
         const {project, developBranchName, masterBranchName } = this.props;
         const {branches} = project;
@@ -369,11 +379,7 @@ class GitFlow extends Component {
         this.onNewFeature = () => this.props.onNewFeature()
         return (
             <GitFlowElm>
-                <GlobalActions>
-                    <Button onClick={this.onNewHotFix}>New Hot Fix</Button>
-                    <Button onClick={this.props.onNewRelease}>New Release</Button>
-                    <Button onClick={this.onNewFeature}>New Feature</Button>
-                </GlobalActions>
+                {this.renderGlobalActions()}
                 <ProjectElm>
                     {this.renderBranchHeaders(param)}
                     {this.renderBranchCommits(param)}
