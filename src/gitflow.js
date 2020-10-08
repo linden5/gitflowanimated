@@ -238,12 +238,12 @@ class GitFlow extends Component {
         )
     };
 
-    renderReleaseBranchHeader = (branch) => {
+    renderReleaseBranchHeader = (branch, renderActions = this.renderReleaseActions) => {
         let actionsElm = null;
         if (branch.merged) {
             actionsElm = this.renderDeleteButton(branch);
         } else {
-            actionsElm = this.renderReleaseActions(branch);
+            actionsElm = renderActions(branch);
         }
         return (
             <BranchHeader
@@ -253,6 +253,10 @@ class GitFlow extends Component {
                 {actionsElm}
             </BranchHeader>
         )
+    };
+
+    renderHotFixBranchHeader = (branch) => {
+        return this.renderReleaseBranchHeader(branch);
     };
 
     renderMasterBranchHeader = (branch) => {
@@ -285,7 +289,7 @@ class GitFlow extends Component {
                     this.renderMasterBranchHeader(masterBranch)
                 }
                 {
-                    hotFixBranches.map(b => this.renderReleaseBranchHeader(b))
+                    hotFixBranches.map(b => this.renderHotFixBranchHeader(b))
                 }
                 {
                     releaseBranches.map(b => this.renderReleaseBranchHeader(b))
