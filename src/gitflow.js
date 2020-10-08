@@ -226,6 +226,10 @@ class GitFlow extends Component {
     };
 
     renderReleaseActions = (branch) => {
+        return this.renderHotfixActions(branch);
+    };
+
+    renderHotfixActions = (branch) => {
         return (
             <BranchActions
                 count={2}
@@ -256,7 +260,7 @@ class GitFlow extends Component {
     };
 
     renderHotFixBranchHeader = (branch) => {
-        return this.renderReleaseBranchHeader(branch);
+        return this.renderReleaseBranchHeader(branch, this.renderHotfixActions);
     };
 
     renderMasterBranchHeader = (branch) => {
