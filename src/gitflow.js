@@ -34,7 +34,7 @@ const GridColumn = styled.div`
 `;
 
 
-const BranchHeader = styled.div`
+export const BranchHeader = styled.div`
     max-width: 90px;
     padding: 5px;
     text-align: center;
@@ -46,7 +46,7 @@ const BranchHeader = styled.div`
     animation: ${fadeIn} .5s ease-in;
 `;
 
-const BranchActions = styled.div`
+export const BranchActions = styled.div`
     display: grid;
     grid-template-columns: ${p => `repeat(${p.count || 1}, 1fr)`};
     margin-top: 10px;
@@ -54,7 +54,7 @@ const BranchActions = styled.div`
     height: 24px;
 `;
 
-const BranchName = styled.h4`
+export const BranchName = styled.h4`
     position: relative;
     font-size: .7rem;
     text-transform: uppercase;
@@ -193,7 +193,7 @@ class GitFlow extends Component {
                 >
                     <ButtonIcon onClick={this.props.onNewRelease}>R</ButtonIcon>
                     {this.renderCommitButton(branch)}
-                    <ButtonIcon onClick={this.props.onNewFeature}>F</ButtonIcon>
+                    <ButtonIcon onClick={this.onNewFeature}>F</ButtonIcon>
                 </BranchActions>
             </BranchHeader>
         )
@@ -256,7 +256,7 @@ class GitFlow extends Component {
                 <BranchName>{branch.name}</BranchName>
                 <BranchActions count={1}>
                     <ButtonIcon
-                        onClick={this.props.onNewHotFix}
+                        onClick={this.onNewHotFix}
                     >H</ButtonIcon>
                 </BranchActions>
             </BranchHeader>
@@ -322,7 +322,7 @@ class GitFlow extends Component {
     renderBranchCommit = (branch, branchIndex) => {
         const {commits} = this.props.project;
         const branchCommits = commits.filter(c => c.branch === branch.id);
-        let isMasterBranch = branch.name === 'master';
+        let isMasterBranch = branch.name === this.props.masterBranchName;
         return (
             <Commits
                 className={branch.merged ? 'merged' : ''}
@@ -348,12 +348,11 @@ class GitFlow extends Component {
     };
 
     render() {
-
-        const {project} = this.props;
+        const {project, developBranchName, masterBranchName } = this.props;
         const {branches} = project;
-        const masterBranch = branches.find(b => b.name === 'master');
+        const masterBranch = branches.find(b => b.name === masterBranchName);
         const hotFixBranches = branches.filter(b => b.hotFixBranch);
-        const developBranch = branches.find(b => b.name === 'develop');
+        const developBranch = branches.find(b => b.name === developBranchName);
         const releaseBranches = branches.filter(b => b.releaseBranch);
         const featureBranches = branches.filter(b => b.featureBranch);
         const noOfBranches = branches.length;
@@ -365,12 +364,15 @@ class GitFlow extends Component {
             releaseBranches,
             noOfBranches
         };
+
+        this.onNewHotFix = () => this.props.onNewHotFix(this.props.masterID)
+        this.onNewFeature = () => this.props.onNewFeature()
         return (
             <GitFlowElm>
                 <GlobalActions>
-                    <Button onClick={this.props.onNewHotFix}>New Hot Fix</Button>
+                    <Button onClick={this.onNewHotFix}>New Hot Fix</Button>
                     <Button onClick={this.props.onNewRelease}>New Release</Button>
-                    <Button onClick={this.props.onNewFeature}>New Feature</Button>
+                    <Button onClick={this.onNewFeature}>New Feature</Button>
                 </GlobalActions>
                 <ProjectElm>
                     {this.renderBranchHeaders(param)}

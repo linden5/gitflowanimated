@@ -50,7 +50,10 @@ const AppElm = styled.main`
 `;
 
 class App extends Component {
-
+    Flow = GitFlow;
+    developBranchName = DEVELOP;
+    developID = developID;
+    masterID = masterID;
     state = {
         project: seedData()
     };
@@ -70,11 +73,11 @@ class App extends Component {
         });
     };
 
-    handleNewFeature = () => {
+    handleNewFeature = (branchID = this.developID, branchName = 'feature', branchColor = '#64B5F6') => {
         let {branches, commits} = this.state.project;
         let featureBranches = branches.filter(b => b.featureBranch);
-        let featureBranchName = 'feature ' + ((featureBranches || []).length + 1);
-        let developCommits = commits.filter(c => c.branch === developID);
+        let featureBranchName = branchName + ' ' + ((featureBranches || []).length + 1);
+        let developCommits = commits.filter(c => c.branch === branchID);
         const lastDevelopCommit = developCommits[developCommits.length - 1];
         let featureOffset = lastDevelopCommit.gridIndex + 1;
         let newBranch = {
@@ -82,7 +85,7 @@ class App extends Component {
             name: featureBranchName,
             featureBranch: true,
             canCommit: true,
-            color: '#64B5F6'
+            color: branchColor
         };
         let newCommit = {
             id: shortid.generate(),
@@ -100,11 +103,11 @@ class App extends Component {
         });
     };
 
-    handleNewHotFix = () => {
+    handleNewHotFix = (branchID = this.masterID, hostFixName = 'hot', hotFixColor = '#ff1744' ) => {
         let {branches, commits} = this.state.project;
         let hotFixBranches = branches.filter(b => b.hotFixBranch);
-        let hotFixBranchName = 'hot ' + ((hotFixBranches || []).length + 1);
-        let masterCommits = commits.filter(c => c.branch === masterID);
+        let hotFixBranchName = hostFixName + ' ' + ((hotFixBranches || []).length + 1);
+        let masterCommits = commits.filter(c => c.branch === branchID);
         const lastMasterCommit = masterCommits[masterCommits.length - 1];
         let hotFixOffset = lastMasterCommit.gridIndex + 1;
 
@@ -113,7 +116,7 @@ class App extends Component {
             name: hotFixBranchName,
             hotFixBranch: true,
             canCommit: true,
-            color: '#ff1744'
+            color: hotFixColor
         };
         let newCommit = {
             id: shortid.generate(),
@@ -135,7 +138,7 @@ class App extends Component {
         let {branches, commits} = this.state.project;
         let releaseBranches = branches.filter(b => b.releaseBranch);
         let releaseBranchName = 'release ' + ((releaseBranches || []).length + 1);
-        let developCommits = commits.filter(c => c.branch === developID);
+        let developCommits = commits.filter(c => c.branch === this.developID);
         const lastDevelopCommit = developCommits[developCommits.length - 1];
         let releaseOffset = lastDevelopCommit.gridIndex + 1;
         let newBranch = {
@@ -166,22 +169,22 @@ class App extends Component {
         const sourceBranch = branches.find(b => b.id === sourceBranchID);
         const sourceCommits = commits.filter(c => c.branch === sourceBranchID);
 
-        const masterCommits = commits.filter(c => c.branch === masterID);
-        const developCommits = commits.filter(c => c.branch === developID);
+        const masterCommits = commits.filter(c => c.branch === this.masterID);
+        const developCommits = commits.filter(c => c.branch === this.developID);
         const lastSourceCommit = sourceCommits[sourceCommits.length - 1];
         const lastMasterCommit = masterCommits[masterCommits.length - 1];
         const lastDevelopCommit = developCommits[developCommits.length - 1];
 
         const masterMergeCommit = {
             id: shortid.generate(),
-            branch: masterID,
+            branch: this.masterID,
             gridIndex: Math.max(lastSourceCommit.gridIndex, lastMasterCommit.gridIndex) + 1,
             parents: [lastMasterCommit.id, lastSourceCommit.id]
         };
 
         const developMergeCommit = {
             id: shortid.generate(),
-            branch: developID,
+            branch: this.developID,
             gridIndex: Math.max(lastSourceCommit.gridIndex, lastDevelopCommit.gridIndex) + 1,
             parents: [lastDevelopCommit.id, lastSourceCommit.id]
         };
@@ -198,7 +201,7 @@ class App extends Component {
 
     };
 
-    handleMerge = (sourceBranchID, targetBranchID = developID) => {
+    handleMerge = (sourceBranchID, targetBranchID = this.developID) => {
         let {branches, commits} = this.state.project;
 
         const sourceBranch = branches.find(b => b.id === sourceBranchID);
@@ -251,7 +254,11 @@ class App extends Component {
     render() {
         return (
             <AppElm>
-                <GitFlow
+                <this.Flow
+                    masterID={this.masterID}
+                    developID={this.developID}
+                    developBranchName={this.developBranchName}
+                    masterBranchName="master"
                     project={this.state.project}
                     onMerge={this.handleMerge}
                     onRelease={this.handleRelease}
