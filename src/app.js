@@ -164,60 +164,34 @@ class App extends Component {
         });
     };
 
+    getMergeCommit = (lastSourceCommit, targetBranchID) => {
+        const lastTargetBranchCommit = this.getLastCommit(targetBranchID)
+        return {
+            id: shortid.generate(),
+            branch: targetBranchID,
+            gridIndex: Math.max(lastSourceCommit.gridIndex, lastTargetBranchCommit.gridIndex) + 1,
+            parents: [lastTargetBranchCommit.id, lastSourceCommit.id]
+        };
+    };
+
+    getLastCommit = (branchID) => {
+        let {commits} = this.state.project;
+        const sourceCommits = commits.filter(c => c.branch === branchID);
+        return sourceCommits[sourceCommits.length - 1];
+    }
+
     handleRelease = (sourceBranchID) => {
-        let {branches, commits} = this.state.project;
-        const sourceBranch = branches.find(b => b.id === sourceBranchID);
-        const sourceCommits = commits.filter(c => c.branch === sourceBranchID);
-
-        const masterCommits = commits.filter(c => c.branch === this.masterID);
-        const developCommits = commits.filter(c => c.branch === this.developID);
-        const lastSourceCommit = sourceCommits[sourceCommits.length - 1];
-        const lastMasterCommit = masterCommits[masterCommits.length - 1];
-        const lastDevelopCommit = developCommits[developCommits.length - 1];
-
-        const masterMergeCommit = {
-            id: shortid.generate(),
-            branch: this.masterID,
-            gridIndex: Math.max(lastSourceCommit.gridIndex, lastMasterCommit.gridIndex) + 1,
-            parents: [lastMasterCommit.id, lastSourceCommit.id]
-        };
-
-        const developMergeCommit = {
-            id: shortid.generate(),
-            branch: this.developID,
-            gridIndex: Math.max(lastSourceCommit.gridIndex, lastDevelopCommit.gridIndex) + 1,
-            parents: [lastDevelopCommit.id, lastSourceCommit.id]
-        };
-
-        commits.push(masterMergeCommit, developMergeCommit);
-        sourceBranch.merged = true;
-
-        this.setState({
-            project: {
-                branches,
-                commits
-            }
-        });
-
+        this.handleMerge(sourceBranchID, this.masterID)
+        this.handleMerge(sourceBranchID, this.developID)
     };
 
     handleMerge = (sourceBranchID, targetBranchID = this.developID) => {
         let {branches, commits} = this.state.project;
 
         const sourceBranch = branches.find(b => b.id === sourceBranchID);
-        const sourceCommits = commits.filter(c => c.branch === sourceBranchID);
-        const targetCommits = commits.filter(c => c.branch === targetBranchID);
+        const lastSourceCommit = this.getLastCommit(sourceBranchID)
 
-        const lastSourceCommit = sourceCommits[sourceCommits.length - 1];
-        const lastTargetCommit = targetCommits[targetCommits.length - 1];
-
-        const mergeCommit = {
-            id: shortid.generate(),
-            branch: targetBranchID,
-            gridIndex: Math.max(lastSourceCommit.gridIndex, lastTargetCommit.gridIndex) + 1,
-            parents: [lastSourceCommit.id, lastTargetCommit.id]
-        };
-        commits.push(mergeCommit);
+        commits.push(this.getMergeCommit(lastSourceCommit, targetBranchID));
 
         sourceBranch.merged = true;
 
