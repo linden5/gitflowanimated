@@ -225,12 +225,17 @@ class GitFlow extends Component {
         )
     };
 
-    renderReleaseMergeButton = (branch) => {
+    renderReleaseActions = (branch) => {
         return (
-            <ButtonIcon
-                onClick={this.props.onRelease.bind(this, branch.id, undefined)}
-            >M</ButtonIcon>
-        );
+            <BranchActions
+                count={2}
+            >
+                {this.renderCommitButton(branch)}
+                <ButtonIcon
+                    onClick={this.props.onRelease.bind(this, branch.id, undefined)}
+                >M</ButtonIcon>
+            </BranchActions>
+        )
     };
 
     renderReleaseBranchHeader = (branch) => {
@@ -238,13 +243,7 @@ class GitFlow extends Component {
         if (branch.merged) {
             actionsElm = this.renderDeleteButton(branch);
         } else {
-            actionsElm = (<BranchActions
-                    count={2}
-                >
-                    {this.renderCommitButton(branch)}
-                    {this.renderReleaseMergeButton(branch)}
-                </BranchActions>
-            );
+            actionsElm = this.renderReleaseActions(branch);
         }
         return (
             <BranchHeader
