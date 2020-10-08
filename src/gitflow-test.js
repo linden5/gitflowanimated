@@ -10,7 +10,7 @@ class GitflowTest extends Gitflow {
             <BranchHeader>
                 <BranchName>{branch.name}</BranchName>
                 <BranchActions count={2}>
-                    <ButtonIcon onClick={() => this.props.onNewFeature(this.props.masterID)}>F</ButtonIcon>
+                    <ButtonIcon onClick={this.onMasterFeature}>F</ButtonIcon>
                     <ButtonIcon
                         onClick={this.onNewHotFix}
                     >H</ButtonIcon>
@@ -41,7 +41,7 @@ class GitflowTest extends Gitflow {
         <GlobalActions>
             <Button onClick={this.onNewHotFix}>New Hot Fix</Button>
             <Button onClick={this.props.onNewRelease}>New Release</Button>
-            <Button onClick={this.onNewFeature}>New Feature</Button>
+            <Button onClick={this.onMasterFeature}>New Feature</Button>
             <Button onClick={this.onBugFix}>New Test Bug Fix</Button>
         </GlobalActions>
         );
@@ -49,6 +49,7 @@ class GitflowTest extends Gitflow {
 
     render () {
         this.onBugFix = this.props.onNewFeature.bind(this, this.props.developID, 'bug', 'yellow');
+        this.onMasterFeature = () => this.props.onNewFeature(this.props.masterID);
         return super.render()
     }
 }
