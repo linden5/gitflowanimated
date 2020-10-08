@@ -191,7 +191,7 @@ class GitFlow extends Component {
                 <BranchActions
                     count={3}
                 >
-                    <ButtonIcon onClick={this.props.onNewRelease}>R</ButtonIcon>
+                    <ButtonIcon onClick={this.onNewRelease}>R</ButtonIcon>
                     {this.renderCommitButton(branch)}
                     <ButtonIcon onClick={this.onNewFeature}>F</ButtonIcon>
                 </BranchActions>
@@ -311,7 +311,7 @@ class GitFlow extends Component {
             >
                 <ConnectionsContainer innerRef={this.cacheConnectionsContainer}/>
                 {
-                    branches.map((branch, index) => {
+                    branches.filter(branch => branch).map((branch, index) => {
                         return this.renderBranchCommit(branch, index)
                     })
                 }
@@ -351,7 +351,7 @@ class GitFlow extends Component {
         return (
         <GlobalActions>
             <Button onClick={this.onNewHotFix}>New Hot Fix</Button>
-            <Button onClick={this.props.onNewRelease}>New Release</Button>
+            <Button onClick={this.onNewRelease}>New Release</Button>
             <Button onClick={this.onNewFeature}>New Feature</Button>
         </GlobalActions>
         );
@@ -377,6 +377,7 @@ class GitFlow extends Component {
 
         this.onNewHotFix = () => this.props.onNewHotFix(this.props.masterID)
         this.onNewFeature = () => this.props.onNewFeature()
+        this.onNewRelease = () => this.props.onNewRelease(this.props.developID)
         return (
             <GitFlowElm>
                 {this.renderGlobalActions()}

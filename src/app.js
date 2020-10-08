@@ -134,11 +134,11 @@ class App extends Component {
         });
     };
 
-    handleNewRelease = () => {
+    handleNewRelease = (branchID = this.developID) => {
         let {branches, commits} = this.state.project;
         let releaseBranches = branches.filter(b => b.releaseBranch);
         let releaseBranchName = 'release ' + ((releaseBranches || []).length + 1);
-        let developCommits = commits.filter(c => c.branch === this.developID);
+        let developCommits = commits.filter(c => c.branch === branchID);
         const lastDevelopCommit = developCommits[developCommits.length - 1];
         let releaseOffset = lastDevelopCommit.gridIndex + 1;
         let newBranch = {
