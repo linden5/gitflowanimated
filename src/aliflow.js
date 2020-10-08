@@ -21,6 +21,10 @@ class AliFlow extends Gitflow {
         )
     };
 
+    renderHotFixBranchHeader = (branch) => {
+        return this.renderReleaseBranchHeader(branch, () => this.renderHotfixActions(branch, 'T'));
+    };
+
     renderReleaseActions = (branch) => {
         return (
             <BranchActions

@@ -229,7 +229,7 @@ class GitFlow extends Component {
         return this.renderHotfixActions(branch);
     };
 
-    renderHotfixActions = (branch) => {
+    renderHotfixActions = (branch, mergeTag = 'M') => {
         return (
             <BranchActions
                 count={2}
@@ -237,7 +237,7 @@ class GitFlow extends Component {
                 {this.renderCommitButton(branch)}
                 <ButtonIcon
                     onClick={this.props.onRelease.bind(this, branch.id, undefined)}
-                >M</ButtonIcon>
+                >{mergeTag}</ButtonIcon>
             </BranchActions>
         )
     };
