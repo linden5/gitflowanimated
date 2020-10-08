@@ -131,6 +131,10 @@ class GitFlow extends Component {
         this.connectionsContainer = elm;
     };
 
+    onNewHotFix = () => this.props.onNewHotFix(this.props.masterID);
+    onNewFeature = () => this.props.onNewFeature();
+    onNewRelease = () => this.props.onNewRelease(this.props.developID);
+
     storeCommitPosition = (id, offset = 0, commitElm) => {
         if (commitElm) {
             this.commitPositions[id] = {
@@ -199,6 +203,14 @@ class GitFlow extends Component {
         )
     };
 
+    renderFeatureBranchMergeButton = (branch) => {
+        return (
+            <ButtonIcon
+                onClick={this.props.onMerge.bind(this, branch.id, undefined)}
+            >M</ButtonIcon>
+        );
+    };
+
     renderFeatureBranchHeader = (branch) => {
         let actionsElm = null;
         if (branch.merged) {
@@ -208,9 +220,7 @@ class GitFlow extends Component {
                 <BranchActions
                     count={2}
                 >
-                    <ButtonIcon
-                        onClick={this.props.onMerge.bind(this, branch.id, undefined)}
-                    >M</ButtonIcon>
+                    {this.renderFeatureBranchMergeButton(branch)}
                     {this.renderCommitButton(branch)}
                 </BranchActions>
             );
@@ -388,9 +398,6 @@ class GitFlow extends Component {
             noOfBranches
         };
 
-        this.onNewHotFix = () => this.props.onNewHotFix(this.props.masterID)
-        this.onNewFeature = () => this.props.onNewFeature()
-        this.onNewRelease = () => this.props.onNewRelease(this.props.developID)
         return (
             <GitFlowElm>
                 {this.renderGlobalActions()}

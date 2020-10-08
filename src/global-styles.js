@@ -1,4 +1,4 @@
-import styled, {injectGlobal, keyframes} from 'styled-components';
+import styled, {injectGlobal, keyframes, css} from 'styled-components';
 
 injectGlobal`
     html, body, div, span, applet, object, iframe,
@@ -105,6 +105,9 @@ export const ButtonIcon = styled.button`
     color: #fff;
     transform: scale(1.1);
   }
+  ${props => props.active && css`
+    background: white;
+  `};
 `;
 
 export const fallDownAnimation = keyframes`
