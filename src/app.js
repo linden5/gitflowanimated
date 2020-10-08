@@ -180,27 +180,32 @@ class App extends Component {
         return sourceCommits[sourceCommits.length - 1];
     }
 
-    handleRelease = (sourceBranchID) => {
-        this.handleMerge(sourceBranchID, this.masterID)
-        this.handleMerge(sourceBranchID, this.developID)
-    };
-
-    handleMerge = (sourceBranchID, targetBranchID = this.developID) => {
+    getMergedState (sourceBranchID, targetBranchIDs) {
         let {branches, commits} = this.state.project;
 
         const sourceBranch = branches.find(b => b.id === sourceBranchID);
         const lastSourceCommit = this.getLastCommit(sourceBranchID)
 
-        commits.push(this.getMergeCommit(lastSourceCommit, targetBranchID));
-
+        targetBranchIDs.forEach(targetBranchID => {
+            commits.push(this.getMergeCommit(lastSourceCommit, targetBranchID));
+        })
+        
         sourceBranch.merged = true;
 
-        this.setState({
+        return {
             project: {
                 branches,
                 commits
             }
-        });
+        }
+    }
+
+    handleRelease = (sourceBranchID) => {
+        this.setState(this.getMergedState(sourceBranchID, [this.masterID, this.developID]));
+    };
+
+    handleMerge = (sourceBranchID, targetBranchID = this.developID) => {
+        this.setState(this.getMergedState(sourceBranchID, [targetBranchID]));
     };
 
     handleDeleteBranch = (branchID) => {

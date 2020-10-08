@@ -225,6 +225,14 @@ class GitFlow extends Component {
         )
     };
 
+    renderReleaseMergeButton = (branch) => {
+        return (
+            <ButtonIcon
+                onClick={this.props.onRelease.bind(this, branch.id, undefined)}
+            >M</ButtonIcon>
+        );
+    };
+
     renderReleaseBranchHeader = (branch) => {
         let actionsElm = null;
         if (branch.merged) {
@@ -234,9 +242,7 @@ class GitFlow extends Component {
                     count={2}
                 >
                     {this.renderCommitButton(branch)}
-                    <ButtonIcon
-                        onClick={this.props.onRelease.bind(this, branch.id, undefined)}
-                    >M</ButtonIcon>
+                    {this.renderReleaseMergeButton(branch)}
                 </BranchActions>
             );
         }
